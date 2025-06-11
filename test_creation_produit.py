@@ -98,12 +98,14 @@ def test_create_product(logged_in_driver):
     
     # Upload image
     image_input = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "label[for^='mbrr417y']"))
+        EC.presence_of_element_located((By.CSS_SELECTOR, "label[for^='mbr'] svg[viewBox='0 0 20 20']"))
     )
     image_input.click()
     # Get the absolute path of the image
     image_path = os.path.abspath("./img/TSnoir.jpg")
-    image_input.send_keys(image_path)
+    # Find the actual file input element that is hidden
+    file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
+    file_input.send_keys(image_path)
     
     # Fill in SEO information
     url_key_input = WebDriverWait(driver, 10).until(
