@@ -6,12 +6,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
-
+from datetime import datetime
 # Test credentials and URLs
 ADMIN_EMAIL = "admin@mail.fr"
 ADMIN_PASSWORD = "password1"
 LOGIN_URL = "http://localhost:3000/admin/login"
 PRODUCTS_URL = "http://localhost:3000/admin/products/new"
+
+
 
 @pytest.fixture
 def driver():
@@ -52,6 +54,11 @@ def test_create_product(logged_in_driver):
     """Test complete product creation process"""
     driver = logged_in_driver
     
+    # Generate unique timestamp for SKU and URL key
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_sku = f"TSH-001_{timestamp}"
+    unique_url_key = f"tshirt-noir_{timestamp}"
+    
     # Navigate directly to new product page
     driver.get("http://localhost:3000/admin/products/new")
     
@@ -67,7 +74,7 @@ def test_create_product(logged_in_driver):
     weight_input = driver.find_element(By.ID, "weight")
     
     name_input.send_keys("T-shirt Noir")
-    sku_input.send_keys("TSH-001")
+    sku_input.send_keys(unique_sku)
     price_input.send_keys("19.99")
     weight_input.send_keys("0.5")
     
@@ -115,7 +122,7 @@ def test_create_product(logged_in_driver):
     meta_keywords_input = driver.find_element(By.ID, "metaKeywords")
     meta_description_input = driver.find_element(By.ID, "meta_description")
     
-    url_key_input.send_keys("tshirt-noir")
+    url_key_input.send_keys(unique_url_key)
     meta_title_input.send_keys("tshirt-noir")
     meta_keywords_input.send_keys("tshirt-noir")
     meta_description_input.send_keys("tshirt-noir")
@@ -151,10 +158,10 @@ def test_create_product(logged_in_driver):
     
     # Verify all fields were saved correctly
     assert name_input.get_attribute("value") == "T-shirt Noir"
-    assert sku_input.get_attribute("value") == "TSH-001"
+    assert sku_input.get_attribute("value") == unique_sku
     assert price_input.get_attribute("value") == "19.99"
     assert weight_input.get_attribute("value") == "0.5"
-    assert url_key_input.get_attribute("value") == "tshirt-noir"
+    assert url_key_input.get_attribute("value") == unique_url_key
     assert meta_title_input.get_attribute("value") == "tshirt-noir"
     assert meta_keywords_input.get_attribute("value") == "tshirt-noir"
     assert meta_description_input.get_attribute("value") == "tshirt-noir"
